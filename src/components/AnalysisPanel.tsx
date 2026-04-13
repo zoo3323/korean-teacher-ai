@@ -90,24 +90,24 @@ function DifficultyBadge({ difficulty }: { difficulty: string }) {
 
 function LiteraryDevicesTab({ items }: { items: LiteraryDevice[] }) {
   if (items.length === 0) {
-    return <p className="py-8 text-center text-sm text-gray-400">문학 장치 데이터가 없습니다.</p>;
+    return <p className="py-10 text-center text-base text-gray-400">문학 장치 데이터가 없습니다.</p>;
   }
 
   return (
     <ul className="space-y-4">
       {items.map((item, index) => (
-        <li key={index} className="rounded-lg border border-gray-200 p-4">
-          <div className="mb-2 flex items-center gap-2">
-            <span className="rounded-md bg-[#5E6AD2]/10 px-2 py-0.5 text-sm font-semibold text-[#5E6AD2]">
+        <li key={index} className="rounded-xl border border-gray-200 p-5">
+          <div className="mb-3 flex items-center gap-2">
+            <span className="rounded-md bg-[#5E6AD2]/10 px-3 py-1 text-sm font-semibold text-[#5E6AD2]">
               {item.device}
             </span>
           </div>
           {item.quote && (
-            <blockquote className="mb-2 border-l-2 border-gray-200 pl-3 text-sm italic text-gray-500">
+            <blockquote className="mb-3 border-l-2 border-gray-200 pl-4 text-base italic text-gray-500">
               &ldquo;{item.quote}&rdquo;
             </blockquote>
           )}
-          <p className="text-sm leading-relaxed text-gray-700">{item.explanation}</p>
+          <p className="text-base leading-relaxed text-gray-700">{item.explanation}</p>
         </li>
       ))}
     </ul>
@@ -116,15 +116,15 @@ function LiteraryDevicesTab({ items }: { items: LiteraryDevice[] }) {
 
 function ThemesTab({ items }: { items: Theme[] }) {
   if (items.length === 0) {
-    return <p className="py-8 text-center text-sm text-gray-400">주제 데이터가 없습니다.</p>;
+    return <p className="py-10 text-center text-base text-gray-400">주제 데이터가 없습니다.</p>;
   }
 
   return (
     <ul className="space-y-4">
       {items.map((item, index) => (
-        <li key={index} className="rounded-lg border border-gray-200 p-4">
-          <h3 className="mb-2 text-sm font-semibold text-gray-900">{item.theme}</h3>
-          <p className="text-sm leading-relaxed text-gray-600">{item.evidence}</p>
+        <li key={index} className="rounded-xl border border-gray-200 p-5">
+          <h3 className="mb-2 text-base font-semibold text-gray-900">{item.theme}</h3>
+          <p className="text-base leading-relaxed text-gray-600">{item.evidence}</p>
         </li>
       ))}
     </ul>
@@ -133,17 +133,17 @@ function ThemesTab({ items }: { items: Theme[] }) {
 
 function VocabularyTab({ items }: { items: VocabularyItem[] }) {
   if (items.length === 0) {
-    return <p className="py-8 text-center text-sm text-gray-400">어휘 데이터가 없습니다.</p>;
+    return <p className="py-10 text-center text-base text-gray-400">어휘 데이터가 없습니다.</p>;
   }
 
   return (
-    <div className="overflow-hidden rounded-lg border border-gray-200">
-      <table className="w-full text-sm">
+    <div className="overflow-hidden rounded-xl border border-gray-200">
+      <table className="w-full text-base">
         <thead>
           <tr className="border-b border-gray-200 bg-gray-50">
-            <th className="px-4 py-2.5 text-left font-medium text-gray-600">어휘</th>
-            <th className="px-4 py-2.5 text-left font-medium text-gray-600">뜻풀이</th>
-            <th className="px-4 py-2.5 text-center font-medium text-gray-600">난이도</th>
+            <th className="px-5 py-3.5 text-left font-semibold text-gray-600">어휘</th>
+            <th className="px-5 py-3.5 text-left font-semibold text-gray-600">뜻풀이</th>
+            <th className="px-5 py-3.5 text-center font-semibold text-gray-600">난이도</th>
           </tr>
         </thead>
         <tbody>
@@ -152,9 +152,9 @@ function VocabularyTab({ items }: { items: VocabularyItem[] }) {
               key={index}
               className={index < items.length - 1 ? 'border-b border-gray-200' : ''}
             >
-              <td className="px-4 py-3 font-medium text-gray-900">{item.word}</td>
-              <td className="px-4 py-3 leading-relaxed text-gray-600">{item.definition}</td>
-              <td className="px-4 py-3 text-center">
+              <td className="px-5 py-4 font-medium text-gray-900">{item.word}</td>
+              <td className="px-5 py-4 leading-relaxed text-gray-600">{item.definition}</td>
+              <td className="px-5 py-4 text-center">
                 <DifficultyBadge difficulty={item.difficulty} />
               </td>
             </tr>
@@ -167,23 +167,23 @@ function VocabularyTab({ items }: { items: VocabularyItem[] }) {
 
 function StructureTab({ items }: { items: StructureSection[] }) {
   if (items.length === 0) {
-    return <p className="py-8 text-center text-sm text-gray-400">구조 데이터가 없습니다.</p>;
+    return <p className="py-10 text-center text-base text-gray-400">구조 데이터가 없습니다.</p>;
   }
 
   return (
     <ul className="space-y-4">
       {items.map((item, index) => (
-        <li key={index} className="rounded-lg border border-gray-200 p-4">
-          <div className="mb-1 flex items-center gap-2">
-            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#5E6AD2] text-xs font-bold text-white">
+        <li key={index} className="rounded-xl border border-gray-200 p-5">
+          <div className="mb-2 flex items-center gap-3">
+            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#5E6AD2] text-sm font-bold text-white">
               {index + 1}
             </span>
-            <span className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+            <span className="text-sm font-semibold uppercase tracking-wide text-gray-500">
               {item.section}
             </span>
           </div>
-          <p className="mb-1 text-sm font-medium text-gray-800">{item.function}</p>
-          <p className="text-sm leading-relaxed text-gray-600">{item.analysis}</p>
+          <p className="mb-1.5 text-base font-medium text-gray-800">{item.function}</p>
+          <p className="text-base leading-relaxed text-gray-600">{item.analysis}</p>
         </li>
       ))}
     </ul>
@@ -262,8 +262,9 @@ export default function AnalysisPanel({ document, onAnalysisComplete }: Analysis
         </button>
 
         {!isAnalyzing && (
-          <p className="text-xs text-gray-400">
-            Claude가 지문의 문학 장치, 주제, 어휘, 구조를 분석합니다.
+          <p className="text-sm text-gray-400 text-center leading-relaxed">
+            Claude가 지문을 분석하고<br />
+            이미지 위에 교사 필기 스타일로 주석을 그립니다.
           </p>
         )}
       </div>
@@ -302,7 +303,7 @@ export default function AnalysisPanel({ document, onAnalysisComplete }: Analysis
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={[
-                'border-b-2 -mb-px px-3 py-3 text-sm font-medium transition-colors',
+                'border-b-2 -mb-px px-4 py-4 text-base font-medium transition-colors',
                 activeTab === tab.id
                   ? 'border-[#5E6AD2] text-[#5E6AD2]'
                   : 'border-transparent text-gray-500 hover:text-gray-900',
@@ -317,7 +318,7 @@ export default function AnalysisPanel({ document, onAnalysisComplete }: Analysis
           onClick={runAnalysis}
           disabled={isAnalyzing}
           className={[
-            'flex items-center gap-1.5 rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium transition-colors',
+            'flex items-center gap-2 rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium transition-colors',
             isAnalyzing
               ? 'cursor-not-allowed text-gray-300'
               : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
@@ -326,7 +327,7 @@ export default function AnalysisPanel({ document, onAnalysisComplete }: Analysis
           {isAnalyzing ? (
             <>
               <span
-                className="h-3 w-3 animate-spin rounded-full border-2 border-gray-300 border-t-gray-600"
+                className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-gray-600"
                 aria-hidden="true"
               />
               분석 중...

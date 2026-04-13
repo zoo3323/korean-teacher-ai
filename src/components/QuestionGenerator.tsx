@@ -35,8 +35,11 @@ interface QuestionGeneratorProps {
   document: {
     id: string;
     extractedText: string | null;
+    analysisJson?: unknown;
   };
 }
+
+type AnalysisSource = 'text' | 'analysis';
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -239,10 +242,13 @@ function QuestionSetCard({ set, onDelete, onRegenerate }: QuestionSetCardProps) 
 export default function QuestionGenerator({ document }: QuestionGeneratorProps) {
   const [selectedType, setSelectedType] = useState<QuestionType>('MULTIPLE_CHOICE');
   const [selectedCount, setSelectedCount] = useState<QuestionCount>(5);
+  const [analysisSource, setAnalysisSource] = useState<AnalysisSource>('text');
   const [questionSets, setQuestionSets] = useState<QuestionSet[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const hasAnalysis = !!document.analysisJson;
 
   // Load existing question sets on mount and whenever the document changes
   useEffect(() => {
@@ -267,20 +273,25 @@ export default function QuestionGenerator({ document }: QuestionGeneratorProps) 
     fetchQuestionSets();
   }, [document.id]);
 
-  async function handleGenerate(type: QuestionType = selectedType, count: number = selectedCount) {
+  async function handleGenerate(type: QuestionType = selectedType, count: number = selectedCount, source: AnalysisSource = analysisSource) {
     if (!document.extractedText) {
-      setErrorMessage('먼저 AI 분석을 실행하여 텍스트를 추출해 주세요.');
+      setErrorMessage('먼저 텍스트를 추출해 주세요.');
       return;
     }
 
     setIsGenerating(true);
     setErrorMessage(null);
 
+    const body: Record<string, unknown> = { questionType: type, count };
+    if (source === 'analysis' && document.analysisJson) {
+      body.analysisContext = JSON.stringify(document.analysisJson, null, 2);
+    }
+
     try {
       const response = await fetch(`/api/documents/${document.id}/questions`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ questionType: type, count }),
+        body: JSON.stringify(body),
       });
 
       if (!response.ok) {
@@ -327,6 +338,37 @@ export default function QuestionGenerator({ document }: QuestionGeneratorProps) 
     <div className="flex h-full flex-col overflow-hidden">
       {/* Generation controls */}
       <div className="shrink-0 space-y-4 border-b border-gray-200 p-4">
+        {/* Analysis source selector — only shown when AI analysis exists */}
+        {hasAnalysis && (
+          <div>
+            <p className="mb-2 text-xs font-medium text-gray-500">문제 출제 기준</p>
+            <div className="flex gap-2">
+              {([
+                { value: 'text' as AnalysisSource, label: '원문 기반' },
+                { value: 'analysis' as AnalysisSource, label: 'AI 분석 기반' },
+              ] as { value: AnalysisSource; label: string }[]).map((opt) => (
+                <button
+                  key={opt.value}
+                  onClick={() => setAnalysisSource(opt.value)}
+                  className={[
+                    'rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors',
+                    analysisSource === opt.value
+                      ? 'border-[#5E6AD2] bg-[#5E6AD2]/10 text-[#5E6AD2]'
+                      : 'border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-gray-900',
+                  ].join(' ')}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+            {analysisSource === 'analysis' && (
+              <p className="mt-1.5 text-xs text-gray-400">
+                AI 분석의 주제·표현 기법·구조를 활용하여 심화 문제를 출제합니다.
+              </p>
+            )}
+          </div>
+        )}
+
         {/* Question type selector */}
         <div>
           <p className="mb-2 text-xs font-medium text-gray-500">문제 유형</p>

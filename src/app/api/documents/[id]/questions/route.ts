@@ -42,6 +42,7 @@ export async function POST(request: Request, { params }: RouteParams) {
 
     const questionType: string = body.questionType ?? "MULTIPLE_CHOICE";
     const count: number = Number(body.count) || 5;
+    const analysisContext: string | undefined = typeof body.analysisContext === "string" ? body.analysisContext : undefined;
 
     // Load document — we need extractedText as the generation source
     const document = await prisma.document.findUnique({
@@ -63,7 +64,7 @@ export async function POST(request: Request, { params }: RouteParams) {
     const response = await anthropic.messages.create({
       model: "claude-sonnet-4-6",
       max_tokens: 4096,
-      messages: getQuestionMessages(document.extractedText, questionType, count),
+      messages: getQuestionMessages(document.extractedText, questionType, count, analysisContext),
     });
 
     const rawText = response.content

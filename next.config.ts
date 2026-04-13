@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: path.resolve(__dirname),
   },
+  allowedDevOrigins: ["*.loca.lt"],
   // Allow images from Vercel Blob and local uploads
   images: {
     remotePatterns: [

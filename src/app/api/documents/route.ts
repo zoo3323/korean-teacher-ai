@@ -3,19 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { writeFile, mkdir } from "node:fs/promises";
 import path from "node:path";
 
-// Use Vercel Blob in production, local filesystem in development
+// 로컬 filesystem에 저장 (public/uploads/ — Next.js가 정적 파일로 서빙)
 async function uploadImage(file: File, projectId: string): Promise<string> {
-  const hasBlob = !!process.env.BLOB_READ_WRITE_TOKEN;
-
-  if (hasBlob) {
-    const { put } = await import("@vercel/blob");
-    const blob = await put(`documents/${projectId}/${file.name}`, file, {
-      access: "public",
-    });
-    return blob.url;
-  }
-
-  // Local dev: save to public/uploads
   const uploadDir = path.join(process.cwd(), "public", "uploads", projectId);
   await mkdir(uploadDir, { recursive: true });
 
@@ -24,7 +13,7 @@ async function uploadImage(file: File, projectId: string): Promise<string> {
   const safeName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
   await writeFile(path.join(uploadDir, safeName), buffer);
 
-  return `/uploads/${projectId}/${safeName}`;
+  return `/api/uploads/${projectId}/${safeName}`;
 }
 
 export async function POST(request: Request) {
