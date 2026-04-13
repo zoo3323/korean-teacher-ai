@@ -230,6 +230,7 @@ export default function WorkspaceLayout({ project }: { project: ProjectRecord })
                   onTextChange={(extractedText) =>
                     handleDocumentUpdated({ id: selectedDoc.id, extractedText })
                   }
+                  onGenerateQuestions={() => setActiveTab("questions")}
                 />
               )}
             </div>
