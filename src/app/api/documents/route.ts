@@ -4,8 +4,9 @@ import { put } from "@vercel/blob";
 
 async function uploadImage(file: File, projectId: string): Promise<string> {
   const safeName = `${projectId}/${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
-  const blob = await put(safeName, file, { access: "public" });
-  return blob.url;
+  const blob = await put(safeName, file, { access: "private" });
+  // 브라우저에서 직접 private URL에 접근 불가 → 서버 프록시 경유
+  return `/api/image?url=${encodeURIComponent(blob.url)}`;
 }
 
 export async function POST(request: Request) {

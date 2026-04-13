@@ -25,7 +25,19 @@ export async function POST(_request: Request, { params }: RouteParams) {
     let imageBuffer: Buffer;
     let mediaType: string;
     try {
-      const imageRes = await fetch(document.imageUrl);
+      // 프록시 URL(/api/image?url=...)에서 실제 Blob URL 추출 후 인증 헤더로 직접 fetch
+      let fetchUrl = document.imageUrl;
+      let fetchHeaders: HeadersInit = {};
+
+      if (document.imageUrl.startsWith("/api/image?url=")) {
+        const blobUrl = new URLSearchParams(document.imageUrl.split("?")[1]).get("url");
+        if (blobUrl) {
+          fetchUrl = blobUrl;
+          fetchHeaders = { Authorization: `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}` };
+        }
+      }
+
+      const imageRes = await fetch(fetchUrl, { headers: fetchHeaders });
       if (!imageRes.ok) throw new Error("fetch failed");
       imageBuffer = Buffer.from(await imageRes.arrayBuffer());
       mediaType = imageRes.headers.get("content-type")?.split(";")[0] ?? "image/jpeg";
