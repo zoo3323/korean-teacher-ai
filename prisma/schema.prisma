@@ -1,0 +1,45 @@
+// Prisma schema — SQLite (libsql) for local dev, Turso/LibSQL for production
+// Switch to "postgresql" + Neon URL for Vercel Postgres in production
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Project {
+  id         String     @id @default(cuid())
+  shareToken String     @unique @default(cuid())
+  title      String     @default("새 프로젝트")
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  documents  Document[]
+}
+
+model Document {
+  id            String       @id @default(cuid())
+  projectId     String
+  title         String       @default("새 지문")
+  imageUrl      String
+  extractedText String?
+  analysisJson  Json?
+  canvasState   Json?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  project      Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  questionSets QuestionSet[]
+}
+
+model QuestionSet {
+  id            String   @id @default(cuid())
+  documentId    String
+  questionType  String
+  questionsJson Json
+  createdAt     DateTime @default(now())
+
+  document Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+}

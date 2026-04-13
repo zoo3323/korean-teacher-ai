@@ -1,0 +1,2 @@
+- [CanvasEditor — Fabric.js v6](project_canvas_editor.md) — Fabric 6.9.1 install workaround + verified v6 API notes (fromURL, backgroundImage, PencilBrush)
+- [Korean Language Teacher Web App](project_korean_teacher_app.md) — stack, API surface, data shapes, design system, export conventions
