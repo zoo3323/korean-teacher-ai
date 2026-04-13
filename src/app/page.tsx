@@ -9,14 +9,20 @@ export default function HomePage() {
   const router = useRouter();
 
   useEffect(() => {
-    const savedToken = localStorage.getItem(LOCAL_STORAGE_KEY);
+    async function init() {
+      const savedToken = localStorage.getItem(LOCAL_STORAGE_KEY);
 
-    if (savedToken) {
-      router.replace(`/project/${savedToken}`);
-      return;
-    }
+      if (savedToken) {
+        // 저장된 토큰이 DB에 실제로 존재하는지 확인
+        const res = await fetch(`/api/projects/${savedToken}`);
+        if (res.ok) {
+          router.replace(`/project/${savedToken}`);
+          return;
+        }
+        // 유효하지 않은 토큰 제거 (DB 초기화 등으로 프로젝트가 사라진 경우)
+        localStorage.removeItem(LOCAL_STORAGE_KEY);
+      }
 
-    async function createProject() {
       try {
         const response = await fetch("/api/projects", {
           method: "POST",
@@ -33,11 +39,10 @@ export default function HomePage() {
         router.replace(`/project/${project.shareToken}`);
       } catch (error) {
         console.error("프로젝트 생성 중 오류 발생:", error);
-        // 재시도를 허용하기 위해 localStorage를 건드리지 않음
       }
     }
 
-    createProject();
+    init();
   }, [router]);
 
   return (
