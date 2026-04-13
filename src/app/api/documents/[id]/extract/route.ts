@@ -1,6 +1,4 @@
 import { NextResponse } from "next/server";
-import { readFile } from "node:fs/promises";
-import path from "node:path";
 import { prisma } from "@/lib/prisma";
 import { anthropic } from "@/lib/anthropic";
 
@@ -24,29 +22,16 @@ export async function POST(_request: Request, { params }: RouteParams) {
       return NextResponse.json({ error: "문서를 찾을 수 없습니다." }, { status: 404 });
     }
 
-    const uploadsPrefix = "/api/uploads/";
-    if (!document.imageUrl.startsWith(uploadsPrefix)) {
-      return NextResponse.json({ error: "이미지 경로가 올바르지 않습니다." }, { status: 422 });
-    }
-    const relativePath = document.imageUrl.slice(uploadsPrefix.length);
-    const filePath = path.join(process.cwd(), "public", "uploads", relativePath);
-
     let imageBuffer: Buffer;
+    let mediaType: string;
     try {
-      imageBuffer = await readFile(filePath);
+      const imageRes = await fetch(document.imageUrl);
+      if (!imageRes.ok) throw new Error("fetch failed");
+      imageBuffer = Buffer.from(await imageRes.arrayBuffer());
+      mediaType = imageRes.headers.get("content-type")?.split(";")[0] ?? "image/jpeg";
     } catch {
       return NextResponse.json({ error: "이미지를 불러오지 못했습니다." }, { status: 502 });
     }
-
-    const ext = path.extname(filePath).toLowerCase();
-    const extToMime: Record<string, string> = {
-      ".jpg": "image/jpeg",
-      ".jpeg": "image/jpeg",
-      ".png": "image/png",
-      ".webp": "image/webp",
-      ".gif": "image/gif",
-    };
-    const mediaType = extToMime[ext] ?? "image/jpeg";
 
     if (!isSupportedMediaType(mediaType)) {
       return NextResponse.json(

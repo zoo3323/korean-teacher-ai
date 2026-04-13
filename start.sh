@@ -13,7 +13,14 @@ cd "$(dirname "$0")"
 # ── 이전 프로세스 정리 ────────────────────────
 pkill -f "next start" 2>/dev/null || true
 pkill -f "next dev" 2>/dev/null || true
+pkill -f "next-server" 2>/dev/null || true
 pkill -f "localtunnel" 2>/dev/null || true
+
+# 포트 3000 점유 프로세스 강제 종료
+PORT_PID=$(lsof -ti:3000 2>/dev/null)
+if [ -n "$PORT_PID" ]; then
+  kill -9 "$PORT_PID" 2>/dev/null || true
+fi
 sleep 1
 
 echo ""
