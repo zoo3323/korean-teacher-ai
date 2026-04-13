@@ -338,36 +338,40 @@ export default function QuestionGenerator({ document }: QuestionGeneratorProps) 
     <div className="flex h-full flex-col overflow-hidden">
       {/* Generation controls */}
       <div className="shrink-0 space-y-4 border-b border-gray-200 p-4">
-        {/* Analysis source selector — only shown when AI analysis exists */}
-        {hasAnalysis && (
-          <div>
-            <p className="mb-2 text-xs font-medium text-gray-500">문제 출제 기준</p>
-            <div className="flex gap-2">
-              {([
-                { value: 'text' as AnalysisSource, label: '원문 기반' },
-                { value: 'analysis' as AnalysisSource, label: 'AI 분석 기반' },
-              ] as { value: AnalysisSource; label: string }[]).map((opt) => (
-                <button
-                  key={opt.value}
-                  onClick={() => setAnalysisSource(opt.value)}
-                  className={[
-                    'rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors',
-                    analysisSource === opt.value
-                      ? 'border-[#5E6AD2] bg-[#5E6AD2]/10 text-[#5E6AD2]'
-                      : 'border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-gray-900',
-                  ].join(' ')}
-                >
-                  {opt.label}
-                </button>
-              ))}
-            </div>
-            {analysisSource === 'analysis' && (
-              <p className="mt-1.5 text-xs text-gray-400">
-                AI 분석의 주제·표현 기법·구조를 활용하여 심화 문제를 출제합니다.
-              </p>
-            )}
+        {/* Analysis source selector */}
+        <div>
+          <p className="mb-2 text-xs font-medium text-gray-500">문제 출제 기준</p>
+          <div className="flex gap-2">
+            {([
+              { value: 'text' as AnalysisSource, label: '사용자 분석 기반' },
+              { value: 'analysis' as AnalysisSource, label: 'AI 분석 기반', disabled: !hasAnalysis },
+            ] as { value: AnalysisSource; label: string; disabled?: boolean }[]).map((opt) => (
+              <button
+                key={opt.value}
+                onClick={() => !opt.disabled && setAnalysisSource(opt.value)}
+                disabled={opt.disabled}
+                className={[
+                  'rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors',
+                  opt.disabled
+                    ? 'cursor-not-allowed border-gray-100 text-gray-300'
+                    : analysisSource === opt.value
+                    ? 'border-[#5E6AD2] bg-[#5E6AD2]/10 text-[#5E6AD2]'
+                    : 'border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-gray-900',
+                ].join(' ')}
+              >
+                {opt.label}
+              </button>
+            ))}
           </div>
-        )}
+          <p className="mt-1.5 text-xs text-gray-400">
+            {analysisSource === 'text'
+              ? '직접 편집한 텍스트를 기반으로 문제를 출제합니다.'
+              : 'AI 분석의 주제·표현 기법·구조를 활용하여 심화 문제를 출제합니다.'}
+            {!hasAnalysis && analysisSource === 'text' && (
+              <span className="ml-1 text-gray-300">· AI 분석 기반은 AI 분석 후 사용 가능</span>
+            )}
+          </p>
+        </div>
 
         {/* Question type selector */}
         <div>
