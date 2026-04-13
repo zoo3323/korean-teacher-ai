@@ -1,36 +1,175 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 국어 지문 분석기
 
-## Getting Started
+> AI 기반 국어 지문 분석 및 문제 생성 도구 — 국어 교사를 위한 수업 준비 플랫폼
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🔑 다른 문제 생성 AI와의 결정적 차이
+
+**기존 AI 문제 생성 도구는 AI가 분석한 내용으로만 문제를 만듭니다.**
+
+이 서비스는 다릅니다.
+
+> **교사가 직접 지문에 메모하고 수정한 내용을 그대로 반영해 문제를 생성합니다.**
+
+수업 중 발견한 포인트, 학생에게 강조하고 싶은 해석, 교사만의 분석 시각을 텍스트로 편집한 뒤 버튼 하나로 그 내용 기반의 문제를 뽑아낼 수 있습니다. AI가 아닌 **교사의 관점**이 문제에 담깁니다.
+
+```
+1. 지문 업로드
+2. 텍스트 추출 (자동 OCR)
+3. 내 분석 메모 추가 / 텍스트 직접 수정   ← 교사의 관점 반영
+4. [문제 생성] 버튼 클릭
+5. 수정된 내용 기반 문제 자동 완성
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 주요 기능
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 1. 지문 이미지 업로드
+- 교과서·참고서·시험지 사진을 그대로 업로드 (JPEG, PNG, WebP, GIF · 최대 10MB)
+- 드래그 앤 드롭 또는 클릭으로 간편 업로드
 
-## Learn More
+### 2. AI OCR 텍스트 추출
+- 업로드한 이미지에서 원문 텍스트를 자동 추출
+- 시·소설·수필의 행 구분을 정확히 보존
+- 추출 결과를 직접 수정·교정 가능
 
-To learn more about Next.js, take a look at the following resources:
+### 3. 직접 분석 (교사의 관점 반영)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+#### 메모 편집
+- 추출된 텍스트를 자유롭게 편집
+- 수업 포인트, 해석, 강조할 구절을 직접 추가
+- 편집 완료 후 **[문제 생성]** 버튼으로 수정된 내용 기반 문제 즉시 생성
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+#### 캔버스 필기
+- 지문 이미지 위에 자유롭게 필기·밑줄·하이라이트
+- 펜, 형광펜, 지우개, 텍스트 삽입 도구 제공
+- 판서 스타일 그대로 디지털화
 
-## Deploy on Vercel
+### 4. AI 분석 (참고서 스타일)
+- Claude AI가 수십 년 경력 국어 교사 관점으로 지문 분석
+- 행별 주석 4종: 표현 기법 / 시어 의미 / 출제 포인트 / 교사 해설
+- 연·단락 구조 분석, 형식 분석, 표현 기법 목록, 어휘 해설
+- 분석 결과를 직접 편집해 저장 가능
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 5. 문제 생성
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| 유형 | 설명 |
+|------|------|
+| 객관식 5지선다 | 수능 스타일, 5개 선지 + 정답 + 해설 |
+| 서술형/단답형 | 모범 답안 + 출제 의도 포함 |
+| 빈칸 추론 | 핵심 어구 기반 빈칸 문제 |
+| 어휘·문법 | 어휘 뜻, 문법 개념 문제 |
+
+- 문항 수 선택: 3 / 5 / 10문항
+- 출제 기준 선택: 원문 기반 또는 AI 분석 기반
+- **메모 탭에서 수정한 내용 기반 문제 생성 가능** (툴바의 [문제 생성] 버튼)
+
+### 6. 내보내기
+- **DOCX**: 분석 결과 + 문제지 Word 파일 다운로드
+- **PDF**: 현재 화면 캡처 기반 PDF 저장
+- **이미지**: PNG 형식으로 워크스페이스 저장
+
+---
+
+## 사용 방법
+
+### Step 1 — 접속
+[korean-teacher-ai-v2.vercel.app](https://korean-teacher-ai-v2.vercel.app) 접속 시 자동으로 개인 워크스페이스가 생성됩니다. 이후 같은 기기에서 재접속하면 이전 작업이 그대로 유지됩니다.
+
+### Step 2 — 지문 업로드
+왼쪽 사이드바에서 **+ 지문 추가** 버튼을 클릭하거나 이미지를 드래그 앤 드롭합니다.
+
+### Step 3 — 텍스트 추출
+**지문** 탭에서 **텍스트 추출** 버튼을 클릭합니다. AI가 이미지에서 원문을 자동으로 읽어냅니다.
+
+### Step 4 — 분석 선택
+
+**A. 내 분석으로 문제 생성하고 싶다면**
+1. **직접 분석** 탭 → **메모** 선택
+2. 추출된 텍스트에 내 해석, 강조 포인트, 수업 메모를 추가·수정
+3. 툴바 우측 **[문제 생성]** 버튼 클릭
+4. → 수정된 내용 기반 문제 자동 생성
+
+**B. AI 분석 결과로 문제 생성하고 싶다면**
+1. **AI 분석** 탭 → **AI 분석 시작** 버튼 클릭
+2. 분석 완료 후 **문제 생성** 탭으로 이동
+3. 출제 기준에서 **AI 분석 기반** 선택 후 생성
+
+### Step 5 — 문제 생성
+**문제 생성** 탭에서 유형·문항 수를 선택 후 **문제 생성** 버튼을 클릭합니다. 생성된 문제는 정답/해설 토글로 확인할 수 있습니다.
+
+### Step 6 — 내보내기
+상단 우측 **내보내기** 메뉴에서 DOCX / PDF / 이미지 형식으로 다운로드합니다.
+
+---
+
+## 화면 구성
+
+```
+┌─────────────┬──────────────────────────────────────────┐
+│  사이드바    │  탭 바: 지문 | 직접 분석 | AI 분석 | 문제 생성  │
+│             ├──────────────────────────────────────────┤
+│  지문 목록   │                                          │
+│             │           메인 작업 영역                  │
+│  + 지문 추가 │                                          │
+└─────────────┴──────────────────────────────────────────┘
+```
+
+| 탭 | 내용 |
+|----|------|
+| 지문 | 업로드 이미지 + OCR 추출 |
+| 직접 분석 | 캔버스 필기 / 텍스트 메모 편집 |
+| AI 분석 | 참고서 스타일 AI 분석 결과 |
+| 문제 생성 | 문제 유형·개수 선택 및 생성 결과 |
+
+---
+
+## 기술 스택
+
+| 영역 | 기술 |
+|------|------|
+| 프레임워크 | Next.js 16 (App Router) |
+| AI | Anthropic Claude (Vision OCR + 분석 + 문제 생성) |
+| 데이터베이스 | PostgreSQL (Neon) + Prisma |
+| 파일 저장 | Vercel Blob |
+| 배포 | Vercel |
+| 스타일 | Tailwind CSS v4 |
+| 캔버스 | Fabric.js |
+
+---
+
+## 로컬 개발 환경 설정
+
+```bash
+# 1. 저장소 클론
+git clone https://github.com/zoo3323/korean-teacher-ai.git
+cd korean-teacher-ai
+
+# 2. Node.js 설치 (nvm 사용 권장)
+nvm install 20 && nvm use 20
+
+# 3. 의존성 설치
+npm install
+
+# 4. 환경변수 설정
+cp .env.example .env
+# .env 파일에 아래 값 입력:
+# ANTHROPIC_API_KEY=sk-ant-...
+# DATABASE_URL=postgresql://...
+# BLOB_READ_WRITE_TOKEN=vercel_blob_rw_...
+
+# 5. DB 초기화
+npx prisma db push
+
+# 6. 개발 서버 시작
+npm run dev
+```
+
+### 서버 스크립트
+
+```bash
+./start.sh   # 프로덕션 빌드 후 서버 시작 + 외부 터널 연결
+./stop.sh    # 서버 종료
+```
